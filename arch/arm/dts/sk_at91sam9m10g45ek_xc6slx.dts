@@ -265,7 +265,7 @@
 
 			rootfs@160000 {
 				label = "rootfs";
-				reg = <0x160000 0xfea0000>;
+				reg = <0x160000 0xfb60000>;
 			};
 		};
 
