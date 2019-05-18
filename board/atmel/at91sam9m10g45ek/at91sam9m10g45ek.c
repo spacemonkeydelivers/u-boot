@@ -260,6 +260,39 @@ int board_early_init_f(void)
 }
 #endif
 
+#ifdef CONFIG_MACB
+static void at91sam9m10g45ek_macb_hw_init(void)
+{
+    struct at91_port *pioa = (struct at91_port *)ATMEL_BASE_PIOA;
+
+    at91_periph_clk_enable(ATMEL_ID_EMAC);
+
+    /*
+     * Disable pull-up on:
+     *      RXDV (PA15) => PHY normal mode (not Test mode)
+     *      ERX0 (PA12) => PHY ADDR0
+     *      ERX1 (PA13) => PHY ADDR1 => PHYADDR = 0x0
+     *
+     * PHY has internal pull-down
+     */
+    writel(pin_to_mask(AT91_PIN_PA15) |
+           pin_to_mask(AT91_PIN_PA12) |
+           pin_to_mask(AT91_PIN_PA13),
+           &pioa->pudr);
+
+    at91_phy_reset();
+
+    /* Re-enable pull-up */
+    writel(pin_to_mask(AT91_PIN_PA15) |
+           pin_to_mask(AT91_PIN_PA12) |
+           pin_to_mask(AT91_PIN_PA13),
+           &pioa->puer);
+
+    /* And the pins. */
+    at91_macb_hw_init();
+}
+#endif
+
 int board_init(void)
 {
 	/* arch number of AT91SAM9M10G45EK-Board */
@@ -280,6 +313,9 @@ int board_init(void)
 #endif
 #ifdef CONFIG_LCD
 	at91sam9m10g45ek_lcd_hw_init();
+#endif
+#ifdef CONFIG_MACB
+	at91sam9m10g45ek_macb_hw_init();
 #endif
 	return 0;
 }
