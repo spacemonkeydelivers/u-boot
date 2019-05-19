@@ -108,7 +108,6 @@
 					reg = <0>;
 					bus-width = <4>;
 					cd-gpios = <&pioD 5 GPIO_ACTIVE_HIGH>;
-					wp-gpios = <&pioD 29 GPIO_ACTIVE_HIGH>;
 				};
 			};
 
